@@ -22,7 +22,7 @@ The VBA script functionalities:
 - Make sure the header row contains required fields:
   - Raw-Search keyword report: Campaign, Ad group, Keyword, Cost, Impr., Clicks
   - Raw-Search terms report: Search term, keyword, Cost, Impr., Clicks
-- Press Alt+F8 on the keyword to show the built in macro name window
+- Press Alt+F8 on the keyboard to show the built in macro name window.
 - Choose "Search_Report" macro and click Run.
 - Wait for the macro to finish and click OK.
 - The CTR (Clicks/Impr.) and CPC (Cost/Clicks) fields are generated for each table.
