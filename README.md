@@ -1,9 +1,9 @@
-## Overview
-This is a small personal data analysis script. 
+## Overview 📊
+This is a short personal data analysis script. 
 
 _Microsoft Excel Visual Basic for Applications (VBA) for Google Ads search terms and keywords data._
 
-## Details
+## Details 🗂️
 
 The VBA script functionalities:
 - Read 2 input sheets.
@@ -15,7 +15,7 @@ The VBA script functionalities:
 - Set basic formatting in all 4 sheets.
 - Display a finished pop-up message with total runtime.
 
-## How to use
+## How to use 📝
 - Download Google Ads search keyword raw data, and put in "Raw-Search keyword report".
 - Download Google Ads search term raw data, and put in "Raw-Search terms report".
 - Make sure the header row is at row 3.
