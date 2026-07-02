@@ -11,18 +11,22 @@ Sub Search_Report()
     BenchMark = Timer
     Application.ScreenUpdating = False
     
+    ' Set up the input sheets
     Set wsKW = ThisWorkbook.Sheets("Raw-Search keyword report")
     Set wsTerm = ThisWorkbook.Sheets("Raw-Search terms report")
     
     wsKW.AutoFilterMode = False
     wsTerm.AutoFilterMode = False
+
+    ' Set up the threshold values
+    CTR_threshold = 0.0517 ' 5.17%
+    CPC_threshold = 0.97 ' $0.97
     
-    CTR_threshold = 0.0517
-    CPC_threshold = 0.97
-    
+    ' Create the output sheets
     Call SubFunc_CreateNewSheet("Search KW Report", wsKW_New)
     Call SubFunc_CreateNewSheet("Search Term Report", wsTerm_New)
     
+    ' Write some basic titles
     wsKW_New.Range("A1").Value = "Keyword Performance"
     wsKW_New.Range("J1").Value = "Ad Group Keyword Performance"
     
@@ -60,7 +64,8 @@ Sub Search_Report()
 
     Set pcTerm_2 = ThisWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:=dataTerm)
     Set ptTerm_2 = pcTerm_2.CreatePivotTable(TableDestination:=pivotStartCellTerm_2, TableName:="PivotTerm_2")
-    '
+
+    ' Create the first pivot table in the keyword sheet
     DoEvents
     With ptKW_1
         ' Add the Calculated Field for CTR with IFERROR logic
@@ -108,7 +113,8 @@ Sub Search_Report()
     .TableStyle2 = "PivotStyleLight16"
     End With
     Call SubFunc_PivotRepeatLabel(ptKW_1, False)
-    '
+
+    ' Create the second pivot table in the keyword sheet
     With ptKW_2
         ' Add the Calculated Field for CTR with IFERROR logic
         .CalculatedFields.Add Name:="CTR_Calc", Formula:="=IFERROR(Clicks/Impr., 0)"
@@ -151,7 +157,8 @@ Sub Search_Report()
     .TableStyle2 = "PivotStyleLight20"
     End With
     Call SubFunc_PivotRepeatLabel(ptKW_2, False)
-    '
+    
+    ' Create the first pivot table in the search term sheet
     With ptTerm_1
         ' Add the Calculated Field for CTR with IFERROR logic
         .CalculatedFields.Add Name:="CTR_Calc", Formula:="=IFERROR(Clicks/Impr., 0)"
@@ -191,7 +198,7 @@ Sub Search_Report()
     End With
     Call SubFunc_PivotRepeatLabel(ptTerm_1, False)
     
-    '
+    ' Create the second pivot table in the search term sheet
     With ptTerm_2
         ' Add the Calculated Field for CTR with IFERROR logic
         .CalculatedFields.Add Name:="CTR_Calc", Formula:="=IFERROR(Clicks/Impr., 0)"
@@ -242,7 +249,8 @@ Sub Search_Report()
     Set rngTerm_1 = ptTerm_1.TableRange1
     Set rngTerm_2 = ptTerm_2.TableRange1
 
-    For i = 2 To rngKW_1.Rows.Count - 1
+    ' In the first pivot table in the keyword sheet
+    For i = 2 To rngKW_1.Rows.Count - 1 ' From row 2 to last row, except Grand Total row
         Set cellName_KW = rngKW_1.Cells(i, 3)
         Set cellName_CTR = rngKW_1.Cells(i, 7)
         Set cellName_CPC = rngKW_1.Cells(i, 8)
@@ -250,19 +258,21 @@ Sub Search_Report()
         cellValue_CTR = cellName_CTR.Value
         cellValue_CPC = cellName_CPC.Value
 
-        ' Find CTR < 5.17%
+        ' Find 0 < CTR < 5.17%
         If cellValue_CTR > 0 And cellValue_CTR < CTR_threshold Then
             cellName_KW.Interior.Color = ERR_HIG
             cellName_CTR.Interior.Color = ERR_HIG
+            ' Find CPC > $0.97
             If cellValue_CPC > CPC_threshold Then cellName_CPC.Interior.Color = ERR_HIG
         ' Find CPC > $0.97
         ElseIf cellValue_CPC > CPC_threshold Then
-            cellName_CPC.Interior.Color = ERR_HIG
             cellName_KW.Interior.Color = ERR_HIG
+            cellName_CPC.Interior.Color = ERR_HIG
         End If
     Next i
 
-    For j = 2 To rngKW_2.Rows.Count - 1
+    ' In the second pivot table in the keyword sheet
+    For j = 2 To rngKW_2.Rows.Count - 1 ' From row 2 to last row, except Grand Total row
         Set cellName_AG = rngKW_2.Cells(j, 2)
         Set cellName_CTR = rngKW_2.Cells(j, 6)
         Set cellName_CPC = rngKW_2.Cells(j, 7)
@@ -270,59 +280,60 @@ Sub Search_Report()
         cellValue_CTR = cellName_CTR.Value
         cellValue_CPC = cellName_CPC.Value
 
-        ' Find CTR < 5.17%
+        ' Find 0 < CTR < 5.17%
         If cellValue_CTR > 0 And cellValue_CTR < CTR_threshold Then
             cellName_AG.Interior.Color = ERR_HIG
             cellName_CTR.Interior.Color = ERR_HIG
+            ' Find CPC > $0.97
             If cellValue_CPC > CPC_threshold Then cellName_CPC.Interior.Color = ERR_HIG
         ' Find CPC > $0.97
         ElseIf cellValue_CPC > CPC_threshold Then
-            cellName_CPC.Interior.Color = ERR_HIG
             cellName_AG.Interior.Color = ERR_HIG
+            cellName_CPC.Interior.Color = ERR_HIG
         End If
     Next j
 
-    For r = 2 To rngTerm_1.Rows.Count - 1
+    ' In the first pivot table in the search term sheet
+    For r = 2 To rngTerm_1.Rows.Count - 1 ' From row 2 to last row, except Grand Total row
         Set cellName_Term = rngTerm_1.Cells(r, 1)
-        'Set cellName_Cost = rngTerm_1.Cells(r, 2)
         Set cellName_CTR = rngTerm_1.Cells(r, 5)
         Set cellName_CPC = rngTerm_1.Cells(r, 6)
 
-        'cellValue_Cost = cellName_Cost.Value
         cellValue_CTR = cellName_CTR.Value
         cellValue_CPC = cellName_CPC.Value
 
-        ' Find CTR < 4%
+        ' Find 0 < CTR < 5.17%
         If cellValue_CTR > 0 And cellValue_CTR < CTR_threshold Then
-            cellName_CTR.Interior.Color = ERR_HIG
             cellName_Term.Interior.Color = ERR_HIG
+            cellName_CTR.Interior.Color = ERR_HIG
+            ' Find CPC > $0.97
             If cellValue_CPC > CPC_threshold Then cellName_CPC.Interior.Color = ERR_HIG
         ' Find CPC > $0.97
         ElseIf cellValue_CPC > CPC_threshold Then
-            cellName_CPC.Interior.Color = ERR_HIG
             cellName_Term.Interior.Color = ERR_HIG
+            cellName_CPC.Interior.Color = ERR_HIG
         End If
     Next r
 
-    For k = 2 To rngTerm_2.Rows.Count - 1
+    ' In the second pivot table in the search term sheet
+    For k = 2 To rngTerm_2.Rows.Count - 1 ' From row 2 to last row, except Grand Total row
         Set cellName_KW = rngTerm_2.Cells(k, 2)
-        'Set cellName_Cost = rngTerm_2.Cells(k, 3)
         Set cellName_CTR = rngTerm_2.Cells(k, 6)
         Set cellName_CPC = rngTerm_2.Cells(k, 7)
 
-        'cellValue_Cost = cellName_Cost.Value
         cellValue_CTR = cellName_CTR.Value
         cellValue_CPC = cellName_CPC.Value
 
-        ' Find CTR < 4%
+        ' Find 0 < CTR < 5.17%
         If cellValue_CTR > 0 And cellValue_CTR < CTR_threshold Then
-            cellName_CTR.Interior.Color = ERR_HIG
             cellName_KW.Interior.Color = ERR_HIG
+            cellName_CTR.Interior.Color = ERR_HIG
+            ' Find CPC > $0.97
             If cellValue_CPC > CPC_threshold Then cellName_CPC.Interior.Color = ERR_HIG
         ' Find CPC > $0.97
         ElseIf cellValue_CPC > CPC_threshold Then
-            cellName_CPC.Interior.Color = ERR_HIG
             cellName_KW.Interior.Color = ERR_HIG
+            cellName_CPC.Interior.Color = ERR_HIG
         End If
     Next k
     
@@ -388,7 +399,7 @@ Public Sub SubFunc_SetZoomLevel(wb_temp As Workbook)
 End Sub
 
 Public Function ERR_HIG() As Long
-    ' Helper function to set the strong red error cell highlight color
+    ' Helper function to set the light red error cell highlight color
     ERR_HIG = RGB(255, 102, 102)
 End Function
 
