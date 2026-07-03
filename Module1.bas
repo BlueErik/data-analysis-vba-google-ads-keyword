@@ -19,7 +19,8 @@ Sub Search_Report()
     wsTerm.AutoFilterMode = False
 
     ' Set up the threshold values
-    CTR_threshold = 0.0517 ' 5.17%
+    CTR_threshold_1 = 0.0517 ' 5.17%
+    CTR_threshold_2 = 0.04 ' 4.00%
     CPC_threshold = 0.97 ' $0.97
     
     ' Create the output sheets
@@ -248,6 +249,13 @@ Sub Search_Report()
 
     Set rngTerm_1 = ptTerm_1.TableRange1
     Set rngTerm_2 = ptTerm_2.TableRange1
+    
+    ' Find the average CTR & CPC values for Keyword
+    cellValue_CTR_KW_1_ave = rngKW_1.Cells(rngKW_1.Rows.Count, 7).Value
+    cellValue_CPC_KW_1_ave = rngKW_1.Cells(rngKW_1.Rows.Count, 8).Value
+    
+    cellValue_CTR_KW_2_ave = rngKW_2.Cells(rngKW_2.Rows.Count, 6).Value
+    cellValue_CPC_KW_2_ave = rngKW_2.Cells(rngKW_2.Rows.Count, 7).Value
 
     ' In the first pivot table in the keyword sheet
     For i = 2 To rngKW_1.Rows.Count - 1 ' From row 2 to last row, except Grand Total row
@@ -259,15 +267,22 @@ Sub Search_Report()
         cellValue_CPC = cellName_CPC.Value
 
         ' Find 0 < CTR < 5.17%
-        If cellValue_CTR > 0 And cellValue_CTR < CTR_threshold Then
-            cellName_KW.Interior.Color = ERR_HIG
-            cellName_CTR.Interior.Color = ERR_HIG
+        If cellValue_CTR > 0 And cellValue_CTR < CTR_threshold_1 Then
+            cellName_KW.Interior.Color = ERR_HIG_1
+            cellName_CTR.Interior.Color = ERR_HIG_1
             ' Find CPC > $0.97
-            If cellValue_CPC > CPC_threshold Then cellName_CPC.Interior.Color = ERR_HIG
+            If cellValue_CPC > CPC_threshold Then cellName_CPC.Interior.Color = ERR_HIG_1
         ' Find CPC > $0.97
         ElseIf cellValue_CPC > CPC_threshold Then
-            cellName_KW.Interior.Color = ERR_HIG
-            cellName_CPC.Interior.Color = ERR_HIG
+            cellName_KW.Interior.Color = ERR_HIG_1
+            cellName_CPC.Interior.Color = ERR_HIG_1
+        End If
+        
+        ' Find keyword with CTR lower than average + CPC higher than average
+        If cellValue_CTR > 0 And cellValue_CTR < cellValue_CTR_KW_1_ave And cellValue_CPC > cellValue_CPC_KW_1_ave Then
+            cellName_KW.Interior.Color = ERR_HIG_2
+            cellName_CTR.Interior.Color = ERR_HIG_2
+            cellName_CPC.Interior.Color = ERR_HIG_2
         End If
     Next i
 
@@ -281,15 +296,22 @@ Sub Search_Report()
         cellValue_CPC = cellName_CPC.Value
 
         ' Find 0 < CTR < 5.17%
-        If cellValue_CTR > 0 And cellValue_CTR < CTR_threshold Then
-            cellName_AG.Interior.Color = ERR_HIG
-            cellName_CTR.Interior.Color = ERR_HIG
+        If cellValue_CTR > 0 And cellValue_CTR < CTR_threshold_1 Then
+            cellName_AG.Interior.Color = ERR_HIG_1
+            cellName_CTR.Interior.Color = ERR_HIG_1
             ' Find CPC > $0.97
-            If cellValue_CPC > CPC_threshold Then cellName_CPC.Interior.Color = ERR_HIG
+            If cellValue_CPC > CPC_threshold Then cellName_CPC.Interior.Color = ERR_HIG_1
         ' Find CPC > $0.97
         ElseIf cellValue_CPC > CPC_threshold Then
-            cellName_AG.Interior.Color = ERR_HIG
-            cellName_CPC.Interior.Color = ERR_HIG
+            cellName_AG.Interior.Color = ERR_HIG_1
+            cellName_CPC.Interior.Color = ERR_HIG_1
+        End If
+        
+        ' Find keyword with CTR lower than average + CPC higher than average
+        If cellValue_CTR > 0 And cellValue_CTR < cellValue_CTR_KW_2_ave And cellValue_CPC > cellValue_CPC_KW_2_ave Then
+            cellName_AG.Interior.Color = ERR_HIG_2
+            cellName_CTR.Interior.Color = ERR_HIG_2
+            cellName_CPC.Interior.Color = ERR_HIG_2
         End If
     Next j
 
@@ -302,16 +324,16 @@ Sub Search_Report()
         cellValue_CTR = cellName_CTR.Value
         cellValue_CPC = cellName_CPC.Value
 
-        ' Find 0 < CTR < 5.17%
-        If cellValue_CTR > 0 And cellValue_CTR < CTR_threshold Then
-            cellName_Term.Interior.Color = ERR_HIG
-            cellName_CTR.Interior.Color = ERR_HIG
+        ' Find 0 < CTR < 4.00%
+        If cellValue_CTR > 0 And cellValue_CTR < CTR_threshold_2 Then
+            cellName_Term.Interior.Color = ERR_HIG_1
+            cellName_CTR.Interior.Color = ERR_HIG_1
             ' Find CPC > $0.97
-            If cellValue_CPC > CPC_threshold Then cellName_CPC.Interior.Color = ERR_HIG
+            If cellValue_CPC > CPC_threshold Then cellName_CPC.Interior.Color = ERR_HIG_1
         ' Find CPC > $0.97
         ElseIf cellValue_CPC > CPC_threshold Then
-            cellName_Term.Interior.Color = ERR_HIG
-            cellName_CPC.Interior.Color = ERR_HIG
+            cellName_Term.Interior.Color = ERR_HIG_1
+            cellName_CPC.Interior.Color = ERR_HIG_1
         End If
     Next r
 
@@ -324,16 +346,16 @@ Sub Search_Report()
         cellValue_CTR = cellName_CTR.Value
         cellValue_CPC = cellName_CPC.Value
 
-        ' Find 0 < CTR < 5.17%
-        If cellValue_CTR > 0 And cellValue_CTR < CTR_threshold Then
-            cellName_KW.Interior.Color = ERR_HIG
-            cellName_CTR.Interior.Color = ERR_HIG
+        ' Find 0 < CTR < 4.00%
+        If cellValue_CTR > 0 And cellValue_CTR < CTR_threshold_2 Then
+            cellName_KW.Interior.Color = ERR_HIG_1
+            cellName_CTR.Interior.Color = ERR_HIG_1
             ' Find CPC > $0.97
-            If cellValue_CPC > CPC_threshold Then cellName_CPC.Interior.Color = ERR_HIG
+            If cellValue_CPC > CPC_threshold Then cellName_CPC.Interior.Color = ERR_HIG_1
         ' Find CPC > $0.97
         ElseIf cellValue_CPC > CPC_threshold Then
-            cellName_KW.Interior.Color = ERR_HIG
-            cellName_CPC.Interior.Color = ERR_HIG
+            cellName_KW.Interior.Color = ERR_HIG_1
+            cellName_CPC.Interior.Color = ERR_HIG_1
         End If
     Next k
     
@@ -393,14 +415,19 @@ Public Sub SubFunc_SetZoomLevel(wb_temp As Workbook)
         ' Skip sheets that are hidden (xlSheetHidden or xlSheetVeryHidden)
         If ws.Visible = xlSheetVisible Then
             ws.Activate
-            ActiveWindow.Zoom = 100 ' Set zoom level to 100%
+            ActiveWindow.Zoom = 70 ' Set zoom level to 70%
         End If
     Next ws
 End Sub
 
-Public Function ERR_HIG() As Long
-    ' Helper function to set the light red error cell highlight color
-    ERR_HIG = RGB(255, 102, 102)
+Public Function ERR_HIG_1() As Long
+    ' Helper function to set the light orange error cell highlight color
+    ERR_HIG_1 = RGB(255, 205, 155)
+End Function
+
+Public Function ERR_HIG_2() As Long
+    ' Helper function to set the light purple error cell highlight color
+    ERR_HIG_2 = RGB(227, 185, 255)
 End Function
 
 Public Function TAB_HIG() As Long
